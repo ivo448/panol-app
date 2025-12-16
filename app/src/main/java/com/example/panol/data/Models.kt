@@ -20,3 +20,10 @@ data class ReservaRequest(
     val fecha_inicio: String, // Formato ISO 8601
     val fecha_fin: String
 )
+
+// data/Models.kt
+data class UserMeResponse(
+    val id: Int,
+    val username: String,
+    val groups: List<String> // Importante: Lista de nombres de grupo (ADMIN, ALUMNO, etc.)
+)

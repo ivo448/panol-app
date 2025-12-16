@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     var isLoading = mutableStateOf(false)
     var errorMessage = mutableStateOf<String?>(null)
     var loginSuccess = mutableStateOf(false)
+    var userGroups = mutableStateOf<List<String>>(emptyList())
 
     fun login(user: String, pass: String) {
         viewModelScope.launch {
@@ -24,6 +25,10 @@ class MainViewModel : ViewModel() {
                 token.value = "Token ${response.token}" // Guardamos "Token xxxx"
                 loginSuccess.value = true
                 loadEquipos() // Cargar datos automáticamente
+                val userMe = RetrofitClient.api.getMe(token.value)
+                userGroups.value = userMe.groups
+                loginSuccess.value = true
+                loadEquipos()
             } catch (e: Exception) {
                 errorMessage.value = "Error de Login: ${e.message}"
             } finally {

@@ -23,8 +23,11 @@ fun EquiposScreen(viewModel: MainViewModel) {
     Scaffold(
         topBar = { TopAppBar(title = { Text("Inventario Disponible") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* Navegar a crear reserva */ }) {
-                Icon(Icons.Default.Add, contentDescription = "Reservar")
+            val isStaff = viewModel.userGroups.value.contains("ADMIN") || viewModel.userGroups.value.contains("PANOLERO")
+            if (isStaff) {
+                FloatingActionButton(onClick = { navController.navigate("reserva") }) { // <--- Asumiendo NavHost usa "reserva"
+                    Icon(Icons.Default.Add, contentDescription = "Reservar para Alumno")
+                }
             }
         }
     ) { padding ->
