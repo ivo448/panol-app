@@ -15,6 +15,7 @@ class MainViewModel : ViewModel() {
     var errorMessage = mutableStateOf<String?>(null)
     var loginSuccess = mutableStateOf(false)
     var userGroups = mutableStateOf<List<String>>(emptyList())
+    var userPermissions = mutableStateOf<List<String>>(emptyList())
 
     fun login(user: String, pass: String) {
         viewModelScope.launch {
@@ -22,19 +23,25 @@ class MainViewModel : ViewModel() {
             errorMessage.value = null
             try {
                 val response = RetrofitClient.api.login(LoginRequest(user, pass))
-                token.value = "Token ${response.token}" // Guardamos "Token xxxx"
-                loginSuccess.value = true
-                loadEquipos() // Cargar datos automáticamente
-                val userMe = RetrofitClient.api.getMe(token.value)
-                userGroups.value = userMe.groups
+                val tokenStr = "Token ${response.token}"
+                token.value = tokenStr
+                
+                val userInfo = RetrofitClient.api.getMe(tokenStr)
+                userPermissions.value = userInfo.permissions
+                
                 loginSuccess.value = true
                 loadEquipos()
             } catch (e: Exception) {
-                errorMessage.value = "Error de Login: ${e.message}"
+                errorMessage.value = "Error: ${e.message}"
             } finally {
                 isLoading.value = false
             }
         }
+    }
+
+    fun isStaff(): Boolean {
+        // Verifica si tiene permisos de administrador o pañolero
+        return userPermissions.value.any { it.contains("view_reserva") || it.contains("add_equipo") }
     }
 
     fun loadEquipos() {

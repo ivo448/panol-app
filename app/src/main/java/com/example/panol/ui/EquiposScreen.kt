@@ -14,19 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.panol.data.Equipo
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavController
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EquiposScreen(viewModel: MainViewModel) {
+fun EquiposScreen(viewModel: MainViewModel, navController: NavController) {
     val equipos by viewModel.equipos
+    val groups = viewModel.userGroups.value
+    val permissions by viewModel.userPermissions
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Inventario Disponible") }) },
         floatingActionButton = {
-            val isStaff = viewModel.userGroups.value.contains("ADMIN") || viewModel.userGroups.value.contains("PANOLERO")
+            val isStaff = groups.contains("ADMIN") || groups.contains("PANOLERO") || groups.contains("app.view_reserva")            
             if (isStaff) {
-                FloatingActionButton(onClick = { navController.navigate("reserva") }) { // <--- Asumiendo NavHost usa "reserva"
-                    Icon(Icons.Default.Add, contentDescription = "Reservar para Alumno")
+                FloatingActionButton(onClick = { navController.navigate("reserva") }) {
+                    Icon(Icons.Default.Add, contentDescription = "Reservar")
                 }
             }
         }

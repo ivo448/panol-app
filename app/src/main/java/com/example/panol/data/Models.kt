@@ -1,4 +1,4 @@
-package com.example.panolapp.data
+package com.example.panol.data
 
 // Modelo para el Login
 data class LoginRequest(val username: String, val password: String)
@@ -26,4 +26,11 @@ data class UserMeResponse(
     val id: Int,
     val username: String,
     val groups: List<String> // Importante: Lista de nombres de grupo (ADMIN, ALUMNO, etc.)
+)
+
+data class UserInfo(
+    val id: Int,
+    val username: String,
+    val full_name: String,
+    val permissions: List<String>
 )
